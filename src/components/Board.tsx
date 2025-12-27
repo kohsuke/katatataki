@@ -1,19 +1,16 @@
 import React,{useState,useEffect} from 'react';
 import './Board.css';
-import Game from './Game.tsx';
-import ActionButton from './components/button.tsx';
+import Game from '../game/Game.tsx';
+import ActionButton from './button.tsx';
 
 export default function Board({ game }: { game: Game }) {
-  // 1. A bit of "dummy" state just to force React to re-render
+  // bridge the mutable world of game engine with the React world by using the dummy 'tick' as the sole state
   const [tick, setTick] = useState(0);
   const forceUpdate = () => {
     setTick(tick => tick + 1);
   }
-
-  // 2. The Bridge
   useEffect(() => game.subscribe(forceUpdate), [game]);
-  // If we have 3 cells, we have 2 borders between them.
-  // The CSS 'repeat' logic handles the N-1 borders automatically.
+
   const gridStyle = {
     '--grid-cols': game.X - 1,
     '--grid-rows': game.Y - 1,

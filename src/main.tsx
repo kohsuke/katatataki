@@ -1,8 +1,8 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import Board from './Board.tsx'
-import Game from './Game.tsx'
+import Board from './components/Board.tsx'
+import Game from './game/Game.tsx'
 
 const 初級1 = [
 "きたきたた＝",
