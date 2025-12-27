@@ -1,0 +1,40 @@
+.puzzle-board {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), 100px 10px) 100px;
+  grid-template-rows: repeat(var(--grid-rows), 100px 10px) 100px;
+
+  gap: 0;
+  background-color: #f0f0f0;
+  width: max-content;
+  border: 2px solid #333;
+}
+
+.cell {
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-family: sans-serif;
+}
+
+/* Vertical Border styling */
+.border-v { width: 10px; height: 100%; }
+.border-v.solid { border-left: 2px solid black; margin-left: 4px; }
+.border-v.dotted { border-left: 2px dotted gray; margin-left: 4px; }
+.border-v.none {}
+
+/* Horizontal Border styling */
+.border-h { height: 10px; width: 100%; }
+.border-h.solid { border-top: 2px solid black; margin-top: 4px; }
+.border-h.dotted { border-top: 2px dotted gray; margin-top: 4px; }
+.border-h.none {}
+
+/* Corners where borders meet (can be empty or used for nodes) */
+.corner { background: transparent; }
+
+/* Make borders interactive */
+.border-v:hover, .border-h:hover {
+  background-color: rgba(0, 0, 255, 0.1);
+  cursor: pointer;
+}
