@@ -58,11 +58,11 @@ export default class Game {
           const n = c.neighbor(d);
           if (n) {
             // no phrase includes these sequences
-            if (['きき', 'かか'].includes(c.value + n.value)) {
+            if (['きき', 'かか'].includes(c.letter + n.letter)) {
               c.setBorder(d, Border.CLOSED);
             }
 
-            if (c.value == 'か' && c.phrase == Phrase.かたたたき && n.value == 'き') {
+            if (c.letter == 'か' && c.phrase == Phrase.かたたたき && n.letter == 'き') {
               c.setBorder(d, Border.CLOSED);
             }
 
@@ -83,7 +83,7 @@ export default class Game {
             const n = c.neighbor(soleNonClosedNeighbor)!;
             c.setBorder(soleNonClosedNeighbor, Border.CONNECTED);
 
-            if (c.value == 'き' && c.phrase == null && n.value == 'か') {
+            if (c.letter == 'き' && c.phrase == null && n.letter == 'か') {
               c.phrase = Phrase.かき;
             }
           }
@@ -99,12 +99,70 @@ export default class Game {
 
             if (c.phrase?.length == 2) {
               // if we are a part of the length 2 phrase like かき, then we will only have one neighbor
-              Direction.ALL.filter(d => d != soleConnectedNeighbor).map(d => {
+              Direction.allBut(soleConnectedNeighbor).map(d => {
                 c.setBorder(d, Border.CLOSED)
               });
             }
           }
         })();
+
+
+        if (c.phrase?.length==2 && c.letter==c.phrase?.head) {
+          c.head = true;
+        }
+
+
+        // かたたたき backtrack search
+        if (c.phrase==Phrase.かたたたき && c.head) {
+          let routes = [[c]];
+
+          // breadth first search
+          for (let remaining=Phrase.かたたたき.name.substring(1); remaining.length>0; remaining=remaining.substring(1)) {
+            const next: Cell[][] = [];
+            routes.forEach(route => {
+              const head = route.at(-1)!;
+              Direction.ALL.forEach(d => {
+                const n = head.neighbor(d);
+                if (head.getBorder(d)!=Border.CLOSED && n && n!=head && n.letter==remaining.charAt(0)) {
+                  next.push([...route, n]);
+                }
+              })
+            });
+            if (next.length==1) {
+
+            }
+
+            routes = next;
+          }
+
+          /**
+           * Unit of backtrack search.
+           *
+           * @param remaining   remaining letters to find
+           * @param cell        cell we are visiting to evaluate the match with `remaining`
+           * @param from        the direction (from the `cell` PoV) the search came from
+           */
+          function search(head: Cell[], remaining: string, c: Cell, from: Direction|null) {
+            if (remaining=="") {
+              // found the whole match
+              routes.push(head);
+              return;
+            }
+            if (c.letter!=remaining.charAt(0)) {
+              // not a match
+              return;
+            }
+
+            Direction.allBut(from).map(d => {
+              const n = c.neighbor(d);
+              if (n) {
+                search([...head, c],remaining.substring(1), n, d);
+              }
+            })
+          }
+
+          search([], Phrase.かたたたき.name, c, null);
+        }
       });
     });
     this.emitChange();

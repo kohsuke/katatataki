@@ -7,7 +7,7 @@ export default class Cell {
   public readonly game: Game;
   public readonly x: number;
   public readonly y: number;
-  public value: string;
+  public letter: string;
   public phrase: Phrase|null = null;
   /** true if this is the head letter of a phrase. */
   public head: boolean = false;
@@ -21,7 +21,7 @@ export default class Cell {
       this.phrase = Phrase.かたたたき;
       this.head = true;
     }
-    this.value = value;
+    this.letter = value;
   }
 
   neighbor(d: Direction) {
@@ -29,11 +29,14 @@ export default class Cell {
   }
 
   render() {
-    return <b>{this.value}</b>;
+    let v = this.letter;
+    if (this.head)
+      v = "("+v+")";
+    return <b>{v}</b>;
   }
 
   click() {
-    this.value = this.value +1;
+    this.letter = this.letter +1;
     this.game.emitChange();
   }
 

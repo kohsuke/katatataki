@@ -15,4 +15,8 @@ export default class Direction {
     this.dx = dx;
     this.dy = dy;
   }
+
+  static allBut(d: Direction|null) {
+    return Direction.ALL.filter(x => x!=d);
+  }
 }
