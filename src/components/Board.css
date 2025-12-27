@@ -40,3 +40,10 @@
   background-color: rgba(0, 0, 255, 0.1);
   cursor: pointer;
 }
+
+.phrase.かたたたき { background-color: #ffcbe1 }
+.phrase.かた { background-color: #d6e5bd }
+.phrase.たか { background-color: #f9e1a8 }
+.phrase.たき { background-color: #bcd8ec }
+.phrase.きた { background-color: #dcccec }
+.phrase.かき { background-color: #ffdab4 }

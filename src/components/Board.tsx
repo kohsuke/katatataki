@@ -33,7 +33,7 @@ export default function Board({ game }: { game: Game }) {
                 const cell = game.cells[x][y];
                 // not sure why, but this only works if data-version={tick} is there. that must be somehow
                 // forcing a redraw
-                elements.push(<div key={`${r}-${c}`} data-version={tick} className="cell" onClick={()=>cell.click()}>
+                elements.push(<div key={`${r}-${c}`} data-version={tick} className={`cell phrase ${cell.phrase?.name}`} onClick={()=>cell.click()}>
                   {cell.render()}
                 </div>);
               } else if (isRowEven && !isColEven) {
