@@ -95,7 +95,7 @@ export default class Game {
             return x.length == 1 ? x[0] : null;
           })();
           if (soleConnectedNeighbor) {
-            const n = c.neighbor(soleConnectedNeighbor)!;
+            // const n = c.neighbor(soleConnectedNeighbor)!;
 
             if (c.phrase?.length == 2) {
               // if we are a part of the length 2 phrase like かき, then we will only have one neighbor
@@ -114,35 +114,18 @@ export default class Game {
 
         // かたたたき backtrack search
         if (c.phrase==Phrase.かたたたき && c.head) {
-          let routes = [[c]];
+          type Route = Cell[];
 
-          // breadth first search
-          for (let remaining=Phrase.かたたたき.name.substring(1); remaining.length>0; remaining=remaining.substring(1)) {
-            const next: Cell[][] = [];
-            routes.forEach(route => {
-              const head = route.at(-1)!;
-              Direction.ALL.forEach(d => {
-                const n = head.neighbor(d);
-                if (head.getBorder(d)!=Border.CLOSED && n && n!=head && n.letter==remaining.charAt(0)) {
-                  next.push([...route, n]);
-                }
-              })
-            });
-            if (next.length==1) {
-
-            }
-
-            routes = next;
-          }
-
+          const routes: Route[] = [];
           /**
            * Unit of backtrack search.
            *
-           * @param remaining   remaining letters to find
-           * @param cell        cell we are visiting to evaluate the match with `remaining`
-           * @param from        the direction (from the `cell` PoV) the search came from
+           * @param head      the route where we came from
+           * @param remaining remaining letters to find
+           * @param c         cell we are visiting to evaluate the match with `remaining`
+           * @param from      the direction (from the `cell` PoV) the search came from
            */
-          function search(head: Cell[], remaining: string, c: Cell, from: Direction|null) {
+          function search(head: Route, remaining: string, c: Cell, from: Direction|null) {
             if (remaining=="") {
               // found the whole match
               routes.push(head);
@@ -156,12 +139,44 @@ export default class Game {
             Direction.allBut(from).map(d => {
               const n = c.neighbor(d);
               if (n) {
-                search([...head, c],remaining.substring(1), n, d);
+                search([...head, c],remaining.substring(1), n, d.opposite());
               }
             })
           }
 
+          // first find all the possible routes
           search([], Phrase.かたたたき.name, c, null);
+
+          // find the choking points, where all the routes pass
+          const chokingRoute = [];
+          for (let pos=0; pos<Phrase.かたたたき.length; pos++) {
+            const possibilities = new Set<Cell>();
+            routes.map(r => possibilities.add(r[pos]));
+            if (possibilities.size==1) {
+              let choke = [...possibilities][0];
+              choke.phrase = Phrase.かたたたき;
+              chokingRoute.push(choke);
+            } else {
+              chokingRoute.push(null);
+            }
+          }
+
+          // if both sides of the choke is also choked, then we can close off other borders
+          for (let pos=0; pos<Phrase.かたたたき.length; pos++) {
+            const l = chokingRoute[pos-1];
+            const c = chokingRoute[pos];
+            const r = chokingRoute[pos+1];
+            if (l!==null && c!==null && r!==null) {// !== to handle the index out of bounds (undefined) case correctly
+              Direction.ALL.forEach(d => {
+                const n = c.neighbor(d);
+                let b = null;
+                if (n==null)    return;
+                if (n===l || n===r) b = Border.CONNECTED;
+                if (l!==null && r!==null && n!==l && n!==r) b = Border.CLOSED;
+                if (b) c.setBorder(d, b);
+              })
+            }
+          }
         }
       });
     });
