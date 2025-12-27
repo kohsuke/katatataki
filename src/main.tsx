@@ -38,9 +38,25 @@ K=TTT= T=TTTT
 TTT=KT TKTK=T
 `);
 
+const 上級1 = translate(`
+TTKTK= TT=TTT K=TTK=
+TTTT=T KTKTTT KTTKTT
+=A=TTT T=T=KK =KTTT=
+KKT=TK =TTTTT TTT=KT
+TTTT=K TT=KTT =TTKTT
+AK=TTT KTTATT TK=KT=
+T=AKK= KT=KKT =TTTTT
+TTTTTT TTTTA= K=TKKA
+KKTTT= KKTTKT TATKTT
+ATKKTT =T=T=T TTTK=T
+KAKT=T TTTKTT =TKKT=
+TTTTTK K=KT=T TT=TTT
+TT=TTK TTTTTK =KKKTT
+=TK=T= TT=KTT KATTT=
+`)
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Board game={new Game(中級1)} />
+    <Board game={new Game(上級1)} />
   </StrictMode>,
 )
