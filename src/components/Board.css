@@ -22,15 +22,15 @@
 
 /* Vertical Border styling */
 .border-v { width: 10px; height: 100%; }
-.border-v.solid { border-left: 2px solid black; margin-left: 4px; }
-.border-v.dotted { border-left: 2px dotted gray; margin-left: 4px; }
-.border-v.none {}
+.border-v.closed { border-left: 2px solid black; margin-left: 4px; }
+.border-v.maybe { border-left: 2px dotted gray; margin-left: 4px; }
+.border-v.connected {}
 
 /* Horizontal Border styling */
 .border-h { height: 10px; width: 100%; }
-.border-h.solid { border-top: 2px solid black; margin-top: 4px; }
-.border-h.dotted { border-top: 2px dotted gray; margin-top: 4px; }
-.border-h.none {}
+.border-h.closed { border-top: 2px solid black; margin-top: 4px; }
+.border-h.maybe { border-top: 2px dotted gray; margin-top: 4px; }
+.border-h.connected {}
 
 /* Corners where borders meet (can be empty or used for nodes) */
 .corner { background: transparent; }

@@ -1,10 +1,16 @@
-export default class Cell {
+import Game from './Game.tsx';
 
-  constructor (
-    public readonly board: Board,
-    public readonly x: number,
-    public readonly y: number,
-    public value: string) {
+export default class Cell {
+  public readonly game: Game;
+  public readonly x: number;
+  public readonly y: number;
+  public value: string;
+
+  constructor (game: Game, x: number, y: number, value: string) {
+    this.game = game;
+    this.x = x;
+    this.y = y;
+    this.value = value;
   }
 
   render() {
@@ -13,6 +19,6 @@ export default class Cell {
 
   click() {
     this.value = this.value +1;
-    this.board.emitChange();
+    this.game.emitChange();
   }
 }

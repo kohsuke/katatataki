@@ -14,7 +14,7 @@ export default function Board({ game }: { game: Game }) {
   const gridStyle = {
     '--grid-cols': game.X - 1,
     '--grid-rows': game.Y - 1,
-  };
+  } as React.CSSProperties;
 
   return (
     <>
@@ -24,21 +24,22 @@ export default function Board({ game }: { game: Game }) {
 
           for (let r = 0; r < game.Y*2-1; r++) {
             for (let c = 0; c < game.X*2-1; c++) {
-
+              const x = Math.floor(c/2);
+              const y = Math.floor(r/2);
               const isRowEven = r % 2 === 0;
               const isColEven = c % 2 === 0;
 
               if (isRowEven && isColEven) {
-                const cell = game.cells[c/2][r/2];
+                const cell = game.cells[x][y];
                 // not sure why, but this only works if data-version={tick} is there. that must be somehow
                 // forcing a redraw
                 elements.push(<div key={`${r}-${c}`} data-version={tick} className="cell" onClick={()=>cell.click()}>
                   {cell.render()}
                 </div>);
               } else if (isRowEven && !isColEven) {
-                elements.push(<div key={`${r}-${c}`} className="border-v dotted"></div>);
+                elements.push(<div key={`${r}-${c}`} className={`border-v ${game.borders.v[x][y].name}`}></div>);
               } else if (!isRowEven && isColEven) {
-                elements.push(<div key={`${r}-${c}`} className="border-h solid"></div>);
+                elements.push(<div key={`${r}-${c}`} className={`border-h ${game.borders.h[x][y].name}`}></div>);
               } else {
                 elements.push(<div key={`${r}-${c}`} className="corner"></div>);
               }

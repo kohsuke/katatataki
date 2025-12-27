@@ -1,9 +1,19 @@
 import Cell from './Cell.tsx';
+import Border from './Border.tsx';
 
 export default class Game {
-  cells: Cell[];
-  X: number;
-  Y: number;
+  public readonly X: number;
+  public readonly Y: number;
+
+  public readonly cells: Cell[][];
+  public readonly borders = {
+    /** vertical border. v[0][0] is the right border of cells[0][0] */
+    v: [] as Border[][],
+    /** horizontal border. h[0][0] is the bottom border of cells[0][0] */
+    h: [] as Border[][]
+    };
+
+  private readonly listeners: Set<() => void> = new Set();
 
   constructor(input: string[]) {
     this.X = input[0].length;
@@ -11,16 +21,24 @@ export default class Game {
     this.listeners = new Set();
     this.cells = [];
     for(let x=0; x<this.X; x++) {
-      const a = [];
+      const a = [], bv = [], bh = [];
       for (let y=0; y<this.Y; y++) {
         a.push(new Cell(this,x,y, input[y][x]) );
+        bv.push(Border.MAYBE);
+        if (y!=this.Y-1) {
+          bh.push(Border.MAYBE);
+        }
       }
       this.cells.push(a);
+      if (x!=this.X-1) {
+        this.borders.v.push(bv);
+      }
+      this.borders.h.push(bh);
     }
   }
 
   // A way for React to "subscribe"
-  subscribe(callback) {
+  subscribe(callback: ()=>void): ()=>void {
     this.listeners.add(callback);
     // Return a function to "unsubscribe" easily
     return () => this.listeners.delete(callback);
