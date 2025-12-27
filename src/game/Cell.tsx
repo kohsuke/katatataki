@@ -1,7 +1,7 @@
 import Game from './Game.tsx';
 import Phrase from "./Phrase.tsx";
 import Direction from "./Direction.tsx";
-import type Border from "./Border.tsx";
+import Border from "./Border.tsx";
 
 export default class Cell {
   public readonly game: Game;
@@ -9,6 +9,8 @@ export default class Cell {
   public readonly y: number;
   public value: string;
   public phrase: Phrase|null = null;
+  /** true if this is the head letter of a phrase. */
+  public head: boolean = false;
 
   constructor (game: Game, x: number, y: number, value: string) {
     this.game = game;
@@ -17,6 +19,7 @@ export default class Cell {
     if (value=='＝') {
       value = 'か';
       this.phrase = Phrase.かたたたき;
+      this.head = true;
     }
     this.value = value;
   }
@@ -34,6 +37,24 @@ export default class Cell {
     this.game.emitChange();
   }
 
+  getBorder(d: Direction) {
+    const borders = this.game.borders;
+    switch (d) {
+    case Direction.U:
+      if (this.y==0)  return Border.CLOSED;
+      return borders.h[this.x][this.y-1];
+    case Direction.D:
+      if (this.y==this.game.Y-1)  return Border.CLOSED;
+      return borders.h[this.x][this.y];
+    case Direction.L:
+      if (this.x==0)  return Border.CLOSED;
+      return borders.v[this.x-1][this.y];
+    case Direction.R:
+      if (this.x==this.game.X-1)  return Border.CLOSED;
+      return borders.v[this.x][this.y];
+    }
+  }
+
   setBorder(d: Direction, b: Border) {
     const borders = this.game.borders;
     switch (d) {
@@ -43,4 +64,5 @@ export default class Cell {
     case Direction.R: borders.v[this.x][this.y] = b; break;
     }
   }
+
 }

@@ -1,6 +1,7 @@
 import Cell from './Cell.tsx';
 import Border from './Border.tsx';
 import Direction from "./Direction.tsx";
+import Phrase from "./Phrase.tsx";
 
 export default class Game {
   public readonly X: number;
@@ -53,20 +54,36 @@ export default class Game {
   solve() {
     this.cells.forEach(r =>
       r.forEach(c => {
-
-
-        function shouldClose(c1:Cell, c2:Cell) {
-          let prohibited = ['きき','かか'];
-          return prohibited.includes(c1.value+c2.value) || prohibited.includes(c2.value+c1.value);
-        }
-
         Direction.ALL.forEach(d => {
-          const n = c.neighbor(d)
-          if (n && shouldClose(c,n)) {
-            console.log(`probe`)
-            c.setBorder(d, Border.CLOSED);
+          const n = c.neighbor(d);
+          if (n) {
+            // no phrase includes these sequences
+            if (['きき', 'かか'].includes(c.value+n.value)) {
+              c.setBorder(d, Border.CLOSED);
+            }
+
+            if (c.value=='か' && c.phrase==Phrase.かたたたき && n.value=='き') {
+              c.setBorder(d, Border.CLOSED);
+            }
+
+            // if two cells are connected, they belong to the same phrase
+            if (c.getBorder(d)==Border.CONNECTED) {
+              if (c.phrase!=null)    n.phrase = c.phrase;
+              if (n.phrase!=null)    c.phrase = n.phrase;
+            }
           }
-        })
+        });
+
+        // rules about a cell by itself
+        const cellRules = [
+          function mustConnectToANeighbor() {
+            const x = Direction.ALL.filter(d => c.getBorder(d)!=Border.CLOSED);
+            if (x.length==1) {
+              c.setBorder(x[0], Border.CONNECTED);
+            }
+          },
+        ];
+        cellRules.map(f => f());
       }));
     console.log("solving")
     this.emitChange();
