@@ -6,7 +6,7 @@ export default class Cell {
   public readonly x: number;
   public readonly y: number;
   public value: string;
-  public phrase: Phrase = null;
+  public phrase: Phrase|null = null;
 
   constructor (game: Game, x: number, y: number, value: string) {
     this.game = game;
