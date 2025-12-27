@@ -8,4 +8,8 @@ export default class Border {
   private constructor(name: string) {
     this.name = name;
   }
+
+  toString() {
+    return this.name;
+  }
 }

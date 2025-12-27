@@ -36,6 +36,17 @@ export default class Cell {
     return x.length == 1 ? x[0] : null;
   }
 
+  soleNonClosedDirection() {
+    const x = Direction.ALL.filter(d => this.getBorder(d) != Border.CLOSED);
+    return x.length == 1 ? x[0] : null;
+  }
+
+  /** If this cell has any neighbor that's already a head, then this cell CANNOT be a head. */
+  cannotBeHead() {
+    return Direction.ALL.find(d => this.neighbor(d)?.head)!=undefined;
+  }
+
+
   render() {
     let v = this.letter;
     if (this.head)
@@ -43,9 +54,21 @@ export default class Cell {
     return <b>{v}</b>;
   }
 
-  click() {
-    this.letter = this.letter +1;
-    this.game.emitChange();
+  // click() {
+  //   this.letter = this.letter +1;
+  //   this.game.emitChange();
+  // }
+
+  /** If this cell is confirmed to be a letter in a two letter phrase, return the other letter. */
+  theOtherInPair() {
+    var d = this.soleNonClosedDirection();
+    if (d) {
+      let n = this.neighbor(d)!;
+      if (n.soleNonClosedDirection()) {
+        return n;
+      }
+    }
+    return null;
   }
 
   getBorder(d: Direction) {
@@ -83,6 +106,16 @@ export default class Cell {
     case Direction.D: safeSet(borders.h, this.x, this.y); break;
     case Direction.L: safeSet(borders.v, this.x - 1, this.y); break;
     case Direction.R: safeSet(borders.v, this.x, this.y); break;
+    }
+  }
+
+  setPhrase(p: Phrase) {
+    if (this.phrase==p)   return; // noop
+    console.assert(this.phrase==null);
+    this.phrase = p;
+    if (this.letter==p.head) {
+      this.head = true;
+      console.assert(!this.cannotBeHead());
     }
   }
 

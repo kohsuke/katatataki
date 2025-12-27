@@ -68,22 +68,19 @@ export default class Game {
 
             // if two cells are connected, they belong to the same phrase
             if (c.getBorder(d) == Border.CONNECTED) {
-              if (c.phrase != null) n.phrase = c.phrase;
-              if (n.phrase != null) c.phrase = n.phrase;
+              if (c.phrase != null) n.setPhrase(c.phrase);
+              if (n.phrase != null) c.setPhrase(n.phrase);
             }
           }
         });
 
-        const soleNonClosedNeighbor = (() => {
-          const x = Direction.ALL.filter(d => c.getBorder(d) != Border.CLOSED);
-          return x.length == 1 ? x[0] : null;
-        })();
-        if (soleNonClosedNeighbor) {// three borders are closed
-          const n = c.neighbor(soleNonClosedNeighbor)!;
-          c.setBorder(soleNonClosedNeighbor, Border.CONNECTED);
+        const soleNonClosedDirection = c.soleNonClosedDirection();
+        if (soleNonClosedDirection) {// three borders are closed
+          const n = c.neighbor(soleNonClosedDirection)!;
+          c.setBorder(soleNonClosedDirection, Border.CONNECTED);
 
           if (c.letter == 'き' && c.phrase == null && n.letter == 'か') {
-            c.phrase = Phrase.かき;
+            c.setPhrase(Phrase.かき);
           }
         }
 
@@ -97,11 +94,6 @@ export default class Game {
               c.setBorder(d, Border.CLOSED)
             });
           }
-        }
-
-        // head letter assignment
-        if (c.phrase?.length==2 && c.letter==c.phrase?.head) {
-          c.head = true;
         }
 
         // かたたたき backtrack search
@@ -146,7 +138,7 @@ export default class Game {
             routes.map(r => possibilities.add(r[pos]));
             if (possibilities.size==1) {
               let choke = [...possibilities][0];
-              choke.phrase = Phrase.かたたたき;
+              choke.setPhrase(Phrase.かたたたき);
               chokingRoute.push(choke);
             } else {
               chokingRoute.push(null);
@@ -171,12 +163,22 @@ export default class Game {
           }
         }
 
+        // (c,o) are paird up as two letter phrase but we don't know what phrase they are
+        const o = c.theOtherInPair();
+        if (o && c.cannotBeHead()) {
+          const p = Phrase.of(o.letter+c.letter);
+          c.setPhrase(p);
+          o.setPhrase(p);
+        }
+
         // if two cells are inter-connected, and if it begins/ends with た or か, then
         // it has to be a two-letter phrase, so we can close off other borders.
-        if (c.phrase==null && soleConnectedDirection) {
+        // WRONG: could be たき of かたたたき
+        if (c.phrase==null && soleNonClosedDirection) {
+          const n = c.neighbor(soleNonClosedDirection)!;
+
           if (c.letter=='た' || (c.letter=='か' && !c.head)) {
-            const n = c.neighbor(soleConnectedDirection)!;
-            Direction.allBut(soleConnectedDirection.opposite()).map(d => {
+            Direction.allBut(soleNonClosedDirection.opposite()).map(d => {
               n.setBorder(d, Border.CLOSED);
             })
           }

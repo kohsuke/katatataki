@@ -17,4 +17,14 @@ export default class Phrase {
     this.length = name.length;
     this.head = name.charAt(0);
   }
+
+  toString() {
+    return this.name;
+  }
+
+  static of(s: string) {
+    const p = Phrase.ALL.find(p => p.name==s);
+    console.assert(p!=undefined);
+    return p!;
+  }
 }
