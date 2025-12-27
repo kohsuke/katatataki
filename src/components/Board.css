@@ -7,8 +7,8 @@
   --size: 60px;
 
   display: grid;
-  grid-template-columns: repeat(var(--grid-cols), var(--size) 10px) var(--size);
-  grid-template-rows: repeat(var(--grid-rows), var(--size) 10px) var(--size);
+  grid-template-columns: repeat(var(--grid-cols), var(--size) 2px) var(--size);
+  grid-template-rows: repeat(var(--grid-rows), var(--size) 2px) var(--size);
 
   gap: 0;
   width: max-content;
@@ -26,14 +26,14 @@
 
 /* Vertical Border styling */
 .border-v { width: 10px; height: 100%; }
-.border-v.closed { border-left: 2px solid black; margin-left: 4px; }
-.border-v.maybe { border-left: 2px dotted gray; margin-left: 4px; }
+.border-v.closed { border-left: 2px solid black; }
+.border-v.maybe { border-left: 2px dotted gray;  }
 .border-v.connected {}
 
 /* Horizontal Border styling */
 .border-h { height: 10px; width: 100%; }
-.border-h.closed { border-top: 2px solid black; margin-top: 4px; }
-.border-h.maybe { border-top: 2px dotted gray; margin-top: 4px; }
+.border-h.closed { border-top: 2px solid black; }
+.border-h.maybe { border-top: 2px dotted gray; }
 .border-h.connected {}
 
 /* Corners where borders meet (can be empty or used for nodes) */
