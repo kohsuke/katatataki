@@ -8,7 +8,7 @@ export default function Legend() {
       <ul>
         {(() => {
           return Phrase.ALL.map((p) => {
-            return <li>
+            return <li key={p.name}>
               <span className={`swatch color-${p.name}`}></span>
               <span className="label">{p.name}</span>
             </li>
