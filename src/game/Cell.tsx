@@ -28,6 +28,15 @@ export default class Cell {
     return this.game.cell(this.x+d.dx, this.y+d.dy);
   }
 
+  forEachNeighbor(f: (n: Cell) => void) {
+    Direction.ALL.forEach(d => {
+      const n = this.neighbor(d);
+      if (n) {
+        f(n);
+      }
+    })
+  }
+
   /**
    * Returns the neighbor cell if & only if that is the only connected neighbor
    */

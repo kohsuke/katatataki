@@ -110,17 +110,20 @@ export default class Game {
            * @param from      the direction (from the `cell` PoV) the search came from
            */
           function search(head: Route, remaining: string, c: Cell, from: Direction|null) {
-            if (remaining=="") {
-              // found the whole match
-              routes.push(head);
-              return;
-            }
             if (c.letter!=remaining.charAt(0)) {
               // not a match
               return;
             }
+            if (remaining.length==1) {
+              // found the whole match
+              routes.push([...head, c]);
+              return;
+            }
 
-            Direction.allBut(from).map(d => {
+            Direction.ALL.forEach(d => {
+              if (d==from)    return;   // we came from there
+              if (c.getBorder(d)==Border.CLOSED)  return;  // can't go there
+
               const n = c.neighbor(d);
               if (n) {
                 search([...head, c],remaining.substring(1), n, d.opposite());
@@ -130,6 +133,10 @@ export default class Game {
 
           // first find all the possible routes
           search([], Phrase.かたたたき.name, c, null);
+
+          if (c.x==11 && c.y==9) {
+            console.log(`routes: ${routes.map(r => `[${r}]`).join(', ')}`);
+          }
 
           // find the choking points, where all the routes pass
           const chokingRoute = [];
@@ -145,11 +152,12 @@ export default class Game {
             }
           }
 
-          // if both sides of the choke is also choked, then we can close off other borders
           for (let pos=0; pos<Phrase.かたたたき.length; pos++) {
             const l = chokingRoute[pos-1];
             const c = chokingRoute[pos];
             const r = chokingRoute[pos+1];
+
+            // if both sides of the choke is also choked, then we can close off other borders
             if (l!==null && c!==null && r!==null) {// !== to handle the index out of bounds (undefined) case correctly
               Direction.ALL.forEach(d => {
                 const n = c.neighbor(d);
@@ -158,6 +166,16 @@ export default class Game {
                 if (n===l || n===r) b = Border.CONNECTED;
                 if (l!==null && r!==null && n!==l && n!==r) b = Border.CLOSED;
                 if (b) c.setBorder(d, b);
+              })
+            }
+
+            // if we are a choking point, we can close off borders that have no possibilities of connection
+            if (c!==null) {
+              Direction.ALL.forEach(d => {
+                const n = c.neighbor(d);
+                if (!routes.find(r => r[pos-1]==n || r[pos+1]==n)) {
+                  c.setBorder(d, Border.CLOSED);
+                }
               })
             }
           }
