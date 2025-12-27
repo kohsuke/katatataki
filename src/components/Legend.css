@@ -1,0 +1,27 @@
+.game-legend {
+  padding: 1rem;
+  background: white;
+  font-family: sans-serif;
+}
+
+.game-legend UL {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Space between items */
+}
+
+.game-legend UL LI {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.swatch {
+  width: 24px;
+  height: 24px;
+  border: 1px solid #ccc;
+  border-radius: 4px; /* Optional: slightly rounded corners */
+}

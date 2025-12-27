@@ -1,3 +1,8 @@
+.puzzle-layout {
+  display: flex;
+  gap: 20px;
+}
+
 .puzzle-board {
   --size: 60px;
 
@@ -41,9 +46,9 @@
   cursor: pointer;
 }
 
-.phrase.かたたたき { background-color: #ffcbe1 }
-.phrase.かた { background-color: #d6e5bd }
-.phrase.たか { background-color: #f9e1a8 }
-.phrase.たき { background-color: #bcd8ec }
-.phrase.きた { background-color: #dcccec }
-.phrase.かき { background-color: #ffdab4 }
+.color-かたたたき { background-color: #ffcbe1 }
+.color-かた { background-color: #d6e5bd }
+.color-たか { background-color: #f9e1a8 }
+.color-たき { background-color: #bcd8ec }
+.color-きた { background-color: #dcccec }
+.color-かき { background-color: #ffdab4 }

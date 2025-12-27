@@ -6,6 +6,8 @@ export default class Phrase {
   public static readonly きた = new Phrase("きた");
   public static readonly かき = new Phrase("かき");
 
+  public static readonly ALL = [Phrase.かたたたき, Phrase.かた, Phrase.たか, Phrase.たき, Phrase.きた, Phrase.かき]
+
   public readonly name: string;
 
   private constructor(name: string) {

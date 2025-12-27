@@ -2,6 +2,7 @@ import React,{useState,useEffect} from 'react';
 import './Board.css';
 import Game from '../game/Game.tsx';
 import ActionButton from './button.tsx';
+import Legend from "./Legend.tsx";
 
 export default function Board({ game }: { game: Game }) {
   // bridge the mutable world of game engine with the React world by using the dummy 'tick' as the sole state
@@ -17,7 +18,7 @@ export default function Board({ game }: { game: Game }) {
   } as React.CSSProperties;
 
   return (
-    <>
+    <div className="puzzle-layout">
       <div className="puzzle-board" style={gridStyle}>
         {(()=> {
           const elements = [];
@@ -33,7 +34,7 @@ export default function Board({ game }: { game: Game }) {
                 const cell = game.cells[x][y];
                 // not sure why, but this only works if data-version={tick} is there. that must be somehow
                 // forcing a redraw
-                elements.push(<div key={`${r}-${c}`} data-version={tick} className={`cell phrase ${cell.phrase?.name}`} onClick={()=>cell.click()}>
+                elements.push(<div key={`${r}-${c}`} data-version={tick} className={`cell color-${cell.phrase?.name}`} onClick={()=>cell.click()}>
                   {cell.render()}
                 </div>);
               } else if (isRowEven && !isColEven) {
@@ -48,7 +49,10 @@ export default function Board({ game }: { game: Game }) {
           return elements;
           })()}
       </div>
-      <ActionButton label="Solve" onAction={() => {game.cells[0][0].click()}} />
-    </>
+      <div>
+        <ActionButton label="Solve" onAction={() => {game.cells[0][0].click()}} />
+        <Legend />
+      </div>
+    </div>
   );
 };
