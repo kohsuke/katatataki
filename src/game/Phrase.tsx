@@ -9,8 +9,10 @@ export default class Phrase {
   public static readonly ALL = [Phrase.かたたたき, Phrase.かた, Phrase.たか, Phrase.たき, Phrase.きた, Phrase.かき]
 
   public readonly name: string;
+  public readonly length: number;
 
   private constructor(name: string) {
     this.name = name;
+    this.length = name.length;
   }
 }
