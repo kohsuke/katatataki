@@ -59,12 +59,22 @@ export default class Cell {
   }
 
   setBorder(d: Direction, b: Border) {
+    function safeSet(arr :Border[][], x: number, y: number) {
+      const a = arr[x];
+      if (a!==undefined) {
+        if (a[y]!==undefined) {
+          a[y] = b;
+          return;
+        }
+      }
+      console.assert(b==Border.CLOSED, "Out ouf bounds border set to non-closed");
+    }
     const borders = this.game.borders;
     switch (d) {
-    case Direction.U: borders.h[this.x][this.y-1] = b; break;
-    case Direction.D: borders.h[this.x][this.y] = b; break;
-    case Direction.L: borders.v[this.x-1][this.y] = b; break;
-    case Direction.R: borders.v[this.x][this.y] = b; break;
+    case Direction.U: safeSet(borders.h, this.x, this.y-1); break;
+    case Direction.D: safeSet(borders.h, this.x, this.y); break;
+    case Direction.L: safeSet(borders.v, this.x - 1, this.y); break;
+    case Direction.R: safeSet(borders.v, this.x, this.y); break;
     }
   }
 
