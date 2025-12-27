@@ -13,7 +13,7 @@ export default class Game {
     v: [] as Border[][],
     /** horizontal border. h[0][0] is the bottom border of cells[0][0] */
     h: [] as Border[][]
-    };
+};
 
   private readonly listeners: Set<() => void> = new Set();
 
@@ -22,17 +22,17 @@ export default class Game {
     this.Y = input.length;
     this.listeners = new Set();
     this.cells = [];
-    for(let x=0; x<this.X; x++) {
+    for (let x = 0; x < this.X; x++) {
       const a = [], bv = [], bh = [];
-      for (let y=0; y<this.Y; y++) {
-        a.push(new Cell(this,x,y, input[y][x]) );
+      for (let y = 0; y < this.Y; y++) {
+        a.push(new Cell(this, x, y, input[y][x]));
         bv.push(Border.MAYBE);
-        if (y!=this.Y-1) {
+        if (y != this.Y - 1) {
           bh.push(Border.MAYBE);
         }
       }
       this.cells.push(a);
-      if (x!=this.X-1) {
+      if (x != this.X - 1) {
         this.borders.v.push(bv);
       }
       this.borders.h.push(bh);
@@ -40,7 +40,7 @@ export default class Game {
   }
 
   // A way for React to "subscribe"
-  subscribe(callback: ()=>void): ()=>void {
+  subscribe(callback: () => void): () => void {
     this.listeners.add(callback);
     // Return a function to "unsubscribe" easily
     return () => this.listeners.delete(callback);
@@ -54,27 +54,27 @@ export default class Game {
   solve() {
     this.cells.forEach(r => {
       r.forEach(c => {
-          Direction.ALL.forEach(d => {
-            const n = c.neighbor(d);
-            if (n) {
-              // no phrase includes these sequences
-              if (['きき', 'かか'].includes(c.value + n.value)) {
-                c.setBorder(d, Border.CLOSED);
-              }
-
-              if (c.value == 'か' && c.phrase == Phrase.かたたたき && n.value == 'き') {
-                c.setBorder(d, Border.CLOSED);
-              }
-
-              // if two cells are connected, they belong to the same phrase
-              if (c.getBorder(d) == Border.CONNECTED) {
-                if (c.phrase != null) n.phrase = c.phrase;
-                if (n.phrase != null) c.phrase = n.phrase;
-              }
+        Direction.ALL.forEach(d => {
+          const n = c.neighbor(d);
+          if (n) {
+            // no phrase includes these sequences
+            if (['きき', 'かか'].includes(c.value + n.value)) {
+              c.setBorder(d, Border.CLOSED);
             }
-          });
 
-          // rules about a cell by itself
+            if (c.value == 'か' && c.phrase == Phrase.かたたたき && n.value == 'き') {
+              c.setBorder(d, Border.CLOSED);
+            }
+
+            // if two cells are connected, they belong to the same phrase
+            if (c.getBorder(d) == Border.CONNECTED) {
+              if (c.phrase != null) n.phrase = c.phrase;
+              if (n.phrase != null) c.phrase = n.phrase;
+            }
+          }
+        });
+
+        (() => {
           const soleNonClosedNeighbor = (() => {
             const x = Direction.ALL.filter(d => c.getBorder(d) != Border.CLOSED);
             return x.length == 1 ? x[0] : null;
@@ -87,7 +87,9 @@ export default class Game {
               c.phrase = Phrase.かき;
             }
           }
+        })();
 
+        (() => {
           const soleConnectedNeighbor = (() => {
             const x = Direction.ALL.filter(d => c.getBorder(d) == Border.CONNECTED);
             return x.length == 1 ? x[0] : null;
@@ -102,16 +104,18 @@ export default class Game {
               });
             }
           }
-        });
+        })();
       });
-      this.emitChange();
+    });
+    this.emitChange();
+  }
+
+  cell(x: number, y: number) {
+    function inRange(s: number, v: number, e: number) {
+      return s <= v && v < e;
     }
 
-    cell(x: number, y: number) {
-    function inRange(s: number, v: number, e: number) {
-      return s<=v && v<e;
-    }
-    if (inRange(0,x,this.X) && inRange(0,y,this.Y)) {
+    if (inRange(0, x, this.X) && inRange(0, y, this.Y)) {
       return this.cells[x][y];
     } else {
       return null;
