@@ -1,5 +1,6 @@
 import Cell from './Cell.tsx';
 import Border from './Border.tsx';
+import Direction from "./Direction.tsx";
 
 export default class Game {
   public readonly X: number;
@@ -47,5 +48,38 @@ export default class Game {
   // Tell everyone to update
   emitChange() {
     this.listeners.forEach(callback => callback());
+  }
+
+  solve() {
+    this.cells.forEach(r =>
+      r.forEach(c => {
+
+
+        function shouldClose(c1:Cell, c2:Cell) {
+          let prohibited = ['きき','かか'];
+          return prohibited.includes(c1.value+c2.value) || prohibited.includes(c2.value+c1.value);
+        }
+
+        Direction.ALL.forEach(d => {
+          const n = c.neighbor(d)
+          if (n && shouldClose(c,n)) {
+            console.log(`probe`)
+            c.setBorder(d, Border.CLOSED);
+          }
+        })
+      }));
+    console.log("solving")
+    this.emitChange();
+  }
+
+  cell(x: number, y: number) {
+    function inRange(s: number, v: number, e: number) {
+      return s<=v && v<e;
+    }
+    if (inRange(0,x,this.X) && inRange(0,y,this.Y)) {
+      return this.cells[x][y];
+    } else {
+      return null;
+    }
   }
 }

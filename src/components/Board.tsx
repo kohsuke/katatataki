@@ -38,9 +38,9 @@ export default function Board({ game }: { game: Game }) {
                   {cell.render()}
                 </div>);
               } else if (isRowEven && !isColEven) {
-                elements.push(<div key={`${r}-${c}`} className={`border-v ${game.borders.v[x][y].name}`}></div>);
+                elements.push(<div key={`${r}-${c}`} data-version={tick} className={`border-v ${game.borders.v[x][y].name}`}></div>);
               } else if (!isRowEven && isColEven) {
-                elements.push(<div key={`${r}-${c}`} className={`border-h ${game.borders.h[x][y].name}`}></div>);
+                elements.push(<div key={`${r}-${c}`} data-version={tick} className={`border-h ${game.borders.h[x][y].name}`}></div>);
               } else {
                 elements.push(<div key={`${r}-${c}`} className="corner"></div>);
               }
@@ -50,7 +50,7 @@ export default function Board({ game }: { game: Game }) {
           })()}
       </div>
       <div>
-        <ActionButton label="Solve" onAction={() => {game.cells[0][0].click()}} />
+        <ActionButton label="Solve" onAction={() => game.solve()} />
         <Legend />
       </div>
     </div>
