@@ -1,7 +1,7 @@
 import React,{useState,useEffect} from 'react';
 import './Board.css';
 import Game from '../game/Game.tsx';
-import ActionButton from './button.tsx';
+import ActionButton from './Button.tsx';
 import Legend from "./Legend.tsx";
 
 export default function Board({ game }: { game: Game }) {
