@@ -12,4 +12,16 @@ export default class Border {
   toString() {
     return this.name;
   }
+
+  next() {
+    switch (this) {
+    case Border.CONNECTED:
+      return Border.MAYBE;
+    case Border.MAYBE:
+      return Border.CLOSED;
+    case Border.CLOSED:
+      return Border.CONNECTED;
+    }
+    throw new Error();
+  }
 }

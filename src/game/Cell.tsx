@@ -3,6 +3,7 @@ import Phrase from "./Phrase.tsx";
 import Direction from "./Direction.tsx";
 import Border from "./Border.tsx";
 import YesNoMaybe from "./YesNoMaybe.tsx";
+import type BorderGrid from "../components/BorderGrid.tsx";
 
 export default class Cell {
   public readonly game: Game;
@@ -94,22 +95,22 @@ export default class Cell {
     switch (d) {
     case Direction.U:
       if (this.y==0)  return Border.CLOSED;
-      return borders.h[this.x][this.y-1];
+      return borders.h.get(this.x,this.y-1);
     case Direction.D:
       if (this.y==this.game.Y-1)  return Border.CLOSED;
-      return borders.h[this.x][this.y];
+      return borders.h.get(this.x,this.y);
     case Direction.L:
       if (this.x==0)  return Border.CLOSED;
-      return borders.v[this.x-1][this.y];
+      return borders.v.get(this.x-1, this.y);
     case Direction.R:
       if (this.x==this.game.X-1)  return Border.CLOSED;
-      return borders.v[this.x][this.y];
+      return borders.v.get(this.x, this.y);
     }
   }
 
   setBorder(d: Direction, b: Border) {
-    function safeSet(arr :Border[][], x: number, y: number) {
-      const a = arr[x];
+    function safeSet(arr :BorderGrid, x: number, y: number) {
+      const a = arr.values[x];
       if (a!==undefined) {
         if (a[y]!==undefined) {
           a[y] = b;

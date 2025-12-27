@@ -3,6 +3,7 @@ import './Board.css';
 import Game from '../game/Game.tsx';
 import ActionButton from './Button.tsx';
 import Legend from "./Legend.tsx";
+import type BorderGrid from "./BorderGrid.tsx";
 
 export default function Board({ game }: { game: Game }) {
   // bridge the mutable world of game engine with the React world by using the dummy 'tick' as the sole state
@@ -30,6 +31,11 @@ export default function Board({ game }: { game: Game }) {
               const isRowEven = r % 2 === 0;
               const isColEven = c % 2 === 0;
 
+              function toggleBorder(bg: BorderGrid, x: number, y: number) {
+                bg.values[x][y] = bg.get(x,y).next();
+                forceUpdate();
+              }
+
               if (isRowEven && isColEven) {
                 const cell = game.cells[x][y];
                 // not sure why, but this only works if data-version={tick} is there. that must be somehow
@@ -38,9 +44,11 @@ export default function Board({ game }: { game: Game }) {
                   {cell.render()}
                 </div>);
               } else if (isRowEven && !isColEven) {
-                elements.push(<div key={`${r}-${c}`} data-version={tick} className={`border-v ${game.borders.v[x][y].name}`}></div>);
+                const bv = game.borders.v;
+                elements.push(<div key={`${r}-${c}`} data-version={tick} className={`border-v ${bv.get(x,y).name}`} onClick={() => toggleBorder(bv,x,y)}></div>);
               } else if (!isRowEven && isColEven) {
-                elements.push(<div key={`${r}-${c}`} data-version={tick} className={`border-h ${game.borders.h[x][y].name}`}></div>);
+                const bh = game.borders.h;
+                elements.push(<div key={`${r}-${c}`} data-version={tick} className={`border-h ${bh.get(x,y).name}`} onClick={() => toggleBorder(bh,x,y)}></div>);
               } else {
                 elements.push(<div key={`${r}-${c}`} className="corner"></div>);
               }

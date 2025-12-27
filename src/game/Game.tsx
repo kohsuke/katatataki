@@ -3,18 +3,19 @@ import Border from './Border.tsx';
 import Direction from "./Direction.tsx";
 import Phrase from "./Phrase.tsx";
 import YesNoMaybe from "./YesNoMaybe.tsx";
+import BorderGrid from "../components/BorderGrid.tsx";
 
 export default class Game {
   public readonly X: number;
   public readonly Y: number;
 
   public readonly cells: Cell[][];
-  public readonly borders = {
+  public readonly borders : {
     /** vertical border. v[0][0] is the right border of cells[0][0] */
-    v: [] as Border[][],
+    v: BorderGrid,
     /** horizontal border. h[0][0] is the bottom border of cells[0][0] */
-    h: [] as Border[][]
-};
+    h: BorderGrid
+  };
 
   private readonly listeners: Set<() => void> = new Set();
 
@@ -23,6 +24,8 @@ export default class Game {
     this.Y = input.length;
     this.listeners = new Set();
     this.cells = [];
+    const bvv: Border[][] = [];
+    const bhh: Border[][] = [];
     for (let x = 0; x < this.X; x++) {
       const a = [], bv = [], bh = [];
       for (let y = 0; y < this.Y; y++) {
@@ -34,10 +37,11 @@ export default class Game {
       }
       this.cells.push(a);
       if (x != this.X - 1) {
-        this.borders.v.push(bv);
+        bvv.push(bv);
       }
-      this.borders.h.push(bh);
+      bhh.push(bh);
     }
+    this.borders = { h: new BorderGrid(bhh), v: new BorderGrid(bvv) };
   }
 
   // A way for React to "subscribe"
