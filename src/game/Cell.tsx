@@ -28,6 +28,14 @@ export default class Cell {
     return this.game.cell(this.x+d.dx, this.y+d.dy);
   }
 
+  /**
+   * Returns the neighbor cell if & only if that is the only connected neighbor
+   */
+  soleConnectedDirection() {
+    const x = Direction.ALL.filter(d => this.getBorder(d) == Border.CONNECTED);
+    return x.length == 1 ? x[0] : null;
+  }
+
   render() {
     let v = this.letter;
     if (this.head)

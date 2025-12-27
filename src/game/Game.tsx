@@ -74,43 +74,35 @@ export default class Game {
           }
         });
 
-        (() => {
-          const soleNonClosedNeighbor = (() => {
-            const x = Direction.ALL.filter(d => c.getBorder(d) != Border.CLOSED);
-            return x.length == 1 ? x[0] : null;
-          })();
-          if (soleNonClosedNeighbor) {// three borders are closed
-            const n = c.neighbor(soleNonClosedNeighbor)!;
-            c.setBorder(soleNonClosedNeighbor, Border.CONNECTED);
-
-            if (c.letter == 'き' && c.phrase == null && n.letter == 'か') {
-              c.phrase = Phrase.かき;
-            }
-          }
+        const soleNonClosedNeighbor = (() => {
+          const x = Direction.ALL.filter(d => c.getBorder(d) != Border.CLOSED);
+          return x.length == 1 ? x[0] : null;
         })();
+        if (soleNonClosedNeighbor) {// three borders are closed
+          const n = c.neighbor(soleNonClosedNeighbor)!;
+          c.setBorder(soleNonClosedNeighbor, Border.CONNECTED);
 
-        (() => {
-          const soleConnectedNeighbor = (() => {
-            const x = Direction.ALL.filter(d => c.getBorder(d) == Border.CONNECTED);
-            return x.length == 1 ? x[0] : null;
-          })();
-          if (soleConnectedNeighbor) {
-            // const n = c.neighbor(soleConnectedNeighbor)!;
-
-            if (c.phrase?.length == 2) {
-              // if we are a part of the length 2 phrase like かき, then we will only have one neighbor
-              Direction.allBut(soleConnectedNeighbor).map(d => {
-                c.setBorder(d, Border.CLOSED)
-              });
-            }
+          if (c.letter == 'き' && c.phrase == null && n.letter == 'か') {
+            c.phrase = Phrase.かき;
           }
-        })();
+        }
 
+        const soleConnectedDirection = c.soleConnectedDirection();
+        if (soleConnectedDirection) {
+          // const n = c.neighbor(soleConnectedDirection)!;
 
+          if (c.phrase?.length == 2) {
+            // if we are a part of the length 2 phrase like かき, then we will only have one neighbor
+            Direction.allBut(soleConnectedDirection).map(d => {
+              c.setBorder(d, Border.CLOSED)
+            });
+          }
+        }
+
+        // head letter assignment
         if (c.phrase?.length==2 && c.letter==c.phrase?.head) {
           c.head = true;
         }
-
 
         // かたたたき backtrack search
         if (c.phrase==Phrase.かたたたき && c.head) {
@@ -176,6 +168,17 @@ export default class Game {
                 if (b) c.setBorder(d, b);
               })
             }
+          }
+        }
+
+        // if two cells are inter-connected, and if it begins/ends with た or か, then
+        // it has to be a two-letter phrase, so we can close off other borders.
+        if (c.phrase==null && soleConnectedDirection) {
+          if (c.letter=='た' || (c.letter=='か' && !c.head)) {
+            const n = c.neighbor(soleConnectedDirection)!;
+            Direction.allBut(soleConnectedDirection.opposite()).map(d => {
+              n.setBorder(d, Border.CLOSED);
+            })
           }
         }
       });
