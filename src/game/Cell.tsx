@@ -68,4 +68,7 @@ export default class Cell {
     }
   }
 
+  toString() {
+    return `(${this.x},${this.y})${this.letter}`;
+  }
 }
