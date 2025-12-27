@@ -2,6 +2,7 @@ import Cell from './Cell.tsx';
 import Border from './Border.tsx';
 import Direction from "./Direction.tsx";
 import Phrase from "./Phrase.tsx";
+import YesNoMaybe from "./YesNoMaybe.tsx";
 
 export default class Game {
   public readonly X: number;
@@ -97,7 +98,7 @@ export default class Game {
         }
 
         // かたたたき backtrack search
-        if (c.phrase==Phrase.かたたたき && c.head) {
+        if (c.phrase==Phrase.かたたたき && c.head==YesNoMaybe.YES) {
           type Route = Cell[];
 
           const routes: Route[] = [];
@@ -195,12 +196,14 @@ export default class Game {
         if (c.phrase==null && soleNonClosedDirection) {
           const n = c.neighbor(soleNonClosedDirection)!;
 
-          if (c.letter=='た' || (c.letter=='か' && !c.head)) {
+          if (c.letter=='た' || (c.letter=='か' && c.head!=YesNoMaybe.YES)) {
             Direction.allBut(soleNonClosedDirection.opposite()).map(d => {
               n.setBorder(d, Border.CLOSED);
             })
           }
         }
+
+        c.updateHead();
       });
     });
     this.emitChange();

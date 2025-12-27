@@ -2,6 +2,7 @@ import Game from './Game.tsx';
 import Phrase from "./Phrase.tsx";
 import Direction from "./Direction.tsx";
 import Border from "./Border.tsx";
+import YesNoMaybe from "./YesNoMaybe.tsx";
 
 export default class Cell {
   public readonly game: Game;
@@ -10,7 +11,7 @@ export default class Cell {
   public letter: string;
   public phrase: Phrase|null = null;
   /** true if this is the head letter of a phrase. */
-  public head: boolean = false;
+  public head: YesNoMaybe = YesNoMaybe.MAYBE;
 
   constructor (game: Game, x: number, y: number, value: string) {
     this.game = game;
@@ -19,13 +20,24 @@ export default class Cell {
     if (value=='＝') {
       value = 'か';
       this.phrase = Phrase.かたたたき;
-      this.head = true;
+      this.head = YesNoMaybe.YES;
     }
     this.letter = value;
   }
 
   neighbor(d: Direction) {
     return this.game.cell(this.x+d.dx, this.y+d.dy);
+  }
+
+  neighbors() {
+    const neighbors: Cell[] = []
+    Direction.ALL.forEach(d => {
+      const n = this.neighbor(d);
+      if (n) {
+        neighbors.push(n);
+      }
+    })
+    return neighbors;
   }
 
   forEachNeighbor(f: (n: Cell) => void) {
@@ -52,15 +64,12 @@ export default class Cell {
 
   /** If this cell has any neighbor that's already a head, then this cell CANNOT be a head. */
   cannotBeHead() {
-    return Direction.ALL.find(d => this.neighbor(d)?.head)!=undefined;
+    return this.head==YesNoMaybe.NO;
   }
 
 
   render() {
-    let v = this.letter;
-    if (this.head)
-      v = "("+v+")";
-    return <b>{v}</b>;
+    return <span className={this.head.name}>{this.letter}</span>;
   }
 
   // click() {
@@ -122,9 +131,16 @@ export default class Cell {
     if (this.phrase==p)   return; // noop
     console.assert(this.phrase==null);
     this.phrase = p;
-    if (this.letter==p.head) {
-      this.head = true;
-      console.assert(!this.cannotBeHead());
+  }
+
+  updateHead() {
+    if (this.head==YesNoMaybe.MAYBE) {
+      if (this.phrase) {
+        this.head = (this.letter==this.phrase.head) ? YesNoMaybe.YES : YesNoMaybe.NO;
+      }
+      if (this.neighbors().find(n => n.head==YesNoMaybe.YES)) {
+        this.head = YesNoMaybe.NO;
+      }
     }
   }
 

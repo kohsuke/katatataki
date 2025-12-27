@@ -51,3 +51,7 @@
 .color-たき { background-color: #bcd8ec }
 .color-きた { background-color: #dcccec }
 .color-かき { background-color: #ffdab4 }
+
+.Yes { font-weight: bold; }
+.No { color: grey; }
+.Maybe {}
