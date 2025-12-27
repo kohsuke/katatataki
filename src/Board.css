@@ -1,7 +1,9 @@
 .puzzle-board {
+  --size: 60px;
+
   display: grid;
-  grid-template-columns: repeat(var(--grid-cols), 100px 10px) 100px;
-  grid-template-rows: repeat(var(--grid-rows), 100px 10px) 100px;
+  grid-template-columns: repeat(var(--grid-cols), var(--size) 10px) var(--size);
+  grid-template-rows: repeat(var(--grid-rows), var(--size) 10px) var(--size);
 
   gap: 0;
   background-color: #f0f0f0;
