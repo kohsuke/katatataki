@@ -6,6 +6,7 @@ import YesNoMaybe from "./YesNoMaybe.tsx";
 import BorderGrid from "../components/BorderGrid.tsx";
 
 export default class Game {
+  public readonly name: string;
   public readonly X: number;
   public readonly Y: number;
 
@@ -19,7 +20,8 @@ export default class Game {
 
   private readonly listeners: Set<() => void> = new Set();
 
-  constructor(input: string[]) {
+  constructor(name: string, input: string[]) {
+    this.name = name;
     this.X = input[0].length;
     this.Y = input.length;
     this.listeners = new Set();

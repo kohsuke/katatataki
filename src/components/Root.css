@@ -1,0 +1,8 @@
+.puzzle-root {
+  padding: 1rem;
+  font-family: sans-serif;
+}
+
+.puzzle-root .selector {
+  padding-bottom: 1rem;
+}
