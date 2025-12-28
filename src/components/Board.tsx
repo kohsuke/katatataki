@@ -13,6 +13,8 @@ export default function Board({ game }: { game: Game }) {
   }
   useEffect(() => game.subscribe(forceUpdate), [game]);
 
+  const [patches, setPatches] = useState<string[]>([]);
+
   const gridStyle = {
     '--grid-cols': game.X - 1,
     '--grid-rows': game.Y - 1,
@@ -32,7 +34,9 @@ export default function Board({ game }: { game: Game }) {
               const isColEven = c % 2 === 0;
 
               function toggleBorder(bg: BorderGrid, x: number, y: number) {
-                bg.values[x][y] = bg.get(x,y).next();
+                const v = bg.get(x,y).next();
+                bg.values[x][y] = v;
+                setPatches([...patches, `game.borders.${bg===game.borders.h?'h':'v'}.values[${x}][${y}] = Border.${v.name.toUpperCase()};`]);
                 forceUpdate();
               }
 
@@ -60,6 +64,10 @@ export default function Board({ game }: { game: Game }) {
       <div>
         <ActionButton label="Solve" onAction={() => game.solve()} />
         <Legend />
+        <div>
+          <h3>Patches</h3>
+          {patches.map((p,i) => <div key={i}>{p}</div>)}
+        </div>
       </div>
     </div>
   );

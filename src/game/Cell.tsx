@@ -30,15 +30,19 @@ export default class Cell {
     return this.game.cell(this.x+d.dx, this.y+d.dy);
   }
 
-  neighbors() {
+  neighbors(filter?: (d: Direction, n: Cell) => boolean) {
     const neighbors: Cell[] = []
     Direction.ALL.forEach(d => {
       const n = this.neighbor(d);
-      if (n) {
+      if (n && (!filter || filter(d,n))) {
         neighbors.push(n);
       }
     })
     return neighbors;
+  }
+
+  connectableNeighbors() {
+    return this.neighbors((d) => this.getBorder(d) != Border.CLOSED);
   }
 
   forEachNeighbor(f: (n: Cell) => void) {

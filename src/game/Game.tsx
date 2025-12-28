@@ -207,6 +207,24 @@ export default class Game {
           }
         }
 
+        // if all the cells you can be possibly connected to are た, then you have to be a part of かたたたき
+        if (c.letter == 'た') {
+          let cn = c.connectableNeighbors();
+          if (!cn.some(c => c.letter != 'た')) {
+            c.setPhrase(Phrase.かたたたき);
+            if (cn.length==2) {
+              // further, if you are only connected to た, then all of them are also a part of かたたたき
+              cn.forEach(n => n.setPhrase(Phrase.かたたたき));
+            }
+          }
+        }
+
+        // if you are not a head, and all of the cells you can be connected to cannot be a head either, then
+        // you have to be a part of かたたたき
+        if (c.cannotBeHead() && c.connectableNeighbors().some(c => !c.cannotBeHead())==null) {
+          c.setPhrase(Phrase.かたたたき);
+        }
+
         c.updateHead();
       });
     });
