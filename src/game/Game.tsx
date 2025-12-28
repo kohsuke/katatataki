@@ -242,9 +242,20 @@ export default class Game {
 
         // if you are not a head, and all of the cells you can be connected to cannot be a head either, then
         // you have to be a part of かたたたき
-        if (c.cannotBeHead() && c.connectableNeighbors().some(c => !c.cannotBeHead())==null) {
+        if (c.cannotBeHead() && !c.connectableNeighbors().some(c => !c.cannotBeHead())) {
           c.setPhrase(Phrase.かたたたき);
         }
+
+        // if all the connectable neighbors are already part of the same phrase, then you have to be part of that phrase too
+        const connectableNeighbors = c.connectableNeighbors();
+        if (connectableNeighbors.length > 0) {
+          const firstPhrase = connectableNeighbors[0].phrase;
+          if (firstPhrase != null && connectableNeighbors.every(n => n.phrase == firstPhrase)) {
+            c.setPhrase(firstPhrase);
+          }
+        }
+
+        // if you are た in かたたたき, and you are connected to only one か
 
         c.updateHead();
       });

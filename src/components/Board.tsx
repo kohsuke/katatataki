@@ -4,6 +4,7 @@ import Game from '../game/Game.tsx';
 import ActionButton from './Button.tsx';
 import Legend from "./Legend.tsx";
 import type BorderGrid from "./BorderGrid.tsx";
+import Border from "../game/Border";
 
 export default function Board({ game }: { game: Game }) {
   // bridge the mutable world of game engine with the React world by using the dummy 'tick' as the sole state
@@ -47,14 +48,17 @@ export default function Board({ game }: { game: Game }) {
                 elements.push(<div key={`${r}-${c}`} data-version={tick} className={`cell color-${cell.phrase?.name}`}>
                   {cell.render()}
                 </div>);
-              } else if (isRowEven && !isColEven) {
-                const bv = game.borders.v;
-                elements.push(<div key={`${r}-${c}`} data-version={tick} className={`border-v ${bv.get(x,y).name}`} onClick={() => toggleBorder(bv,x,y)}></div>);
-              } else if (!isRowEven && isColEven) {
-                const bh = game.borders.h;
-                elements.push(<div key={`${r}-${c}`} data-version={tick} className={`border-h ${bh.get(x,y).name}`} onClick={() => toggleBorder(bh,x,y)}></div>);
-              } else {
+              } else if (!isRowEven && !isColEven) {
                 elements.push(<div key={`${r}-${c}`} className="corner"></div>);
+              } else {
+                const bg = isRowEven ? game.borders.v : game.borders.h;
+
+                const b = bg.get(x,y);
+                const colorClass = (b==Border.CONNECTED ? `color-${game.cells[x][y].phrase?.name}` : '')
+                elements.push(<div key={`${r}-${c}`}
+                                   data-version={tick}
+                    className={`border-${isRowEven?'v':'h'} ${b.name} ${colorClass}`}
+                    onClick={() => toggleBorder(bg,x,y)}></div>);
               }
             }
           }

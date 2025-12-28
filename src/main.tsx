@@ -57,57 +57,23 @@ TT=TTK TTTTTK =KKKTT
 `)
 
 const game = new Game(上級1);
-
-// patch set
-game.borders.v.values[16][10] = Border.CLOSED;
-game.borders.h.values[17][9] = Border.CLOSED;
+game.borders.h.values[16][11] = Border.CLOSED;
+game.borders.v.values[0][1] = Border.CLOSED;
+game.borders.h.values[9][0] = Border.CLOSED;
 game.borders.v.values[14][0] = Border.CLOSED;
 game.borders.h.values[15][0] = Border.CLOSED;
-game.borders.h.values[14][3] = Border.CLOSED;
-game.borders.v.values[13][3] = Border.CLOSED;
-game.borders.v.values[0][1] = Border.CLOSED;
-game.borders.h.values[11][12] = Border.CLOSED;
-game.borders.h.values[5][0] = Border.CLOSED;
-game.borders.h.values[9][0] = Border.CLOSED;
-game.borders.h.values[10][0] = Border.CLOSED;
-
-game.borders.h.values[10][10] = Border.CLOSED;
-game.borders.v.values[10][11] = Border.CLOSED;
-game.borders.v.values[16][5] = Border.CLOSED;
-game.borders.v.values[15][6] = Border.CLOSED;
-game.borders.v.values[8][2] = Border.CLOSED;
-game.borders.h.values[3][0] = Border.CONNECTED;
-game.borders.v.values[1][1] = Border.CLOSED;
-game.borders.h.values[2][2] = Border.CLOSED;
-game.borders.v.values[2][2] = Border.CLOSED;
-
-game.borders.v.values[2][3] = Border.CLOSED;
-game.borders.h.values[12][4] = Border.CLOSED;
-
+game.borders.h.values[11][9] = Border.CLOSED;
+game.borders.v.values[10][9] = Border.CLOSED;
 game.borders.v.values[12][9] = Border.CLOSED;
 game.borders.h.values[12][8] = Border.CLOSED;
-game.borders.h.values[11][9] = Border.CLOSED;
-game.borders.v.values[11][10] = Border.CLOSED;
-game.borders.v.values[9][9] = Border.CLOSED;
-game.borders.v.values[9][10] = Border.CLOSED;
-
-game.borders.h.values[9][9] = Border.CLOSED;
-game.borders.v.values[8][10] = Border.CLOSED;
-game.borders.v.values[8][11] = Border.CLOSED;
-game.borders.h.values[8][9] = Border.CLOSED;
 game.borders.v.values[7][9] = Border.CLOSED;
-game.borders.v.values[5][9] = Border.CLOSED;
-game.borders.h.values[6][9] = Border.CLOSED;
-game.borders.v.values[6][10] = Border.CLOSED;
-game.borders.h.values[6][11] = Border.CLOSED;
-
-game.borders.v.values[4][10] = Border.CLOSED;
-
-game.borders.h.values[5][7] = Border.CLOSED;
+game.borders.h.values[8][8] = Border.CLOSED;
+game.borders.v.values[10][5] = Border.CLOSED;
+game.borders.h.values[3][9] = Border.CLOSED;
+game.borders.v.values[2][8] = Border.CLOSED;
 game.borders.h.values[4][7] = Border.CLOSED;
-game.borders.h.values[5][5] = Border.CLOSED;
 game.borders.h.values[6][4] = Border.CLOSED;
-game.borders.v.values[4][5] = Border.CLOSED;
+game.borders.h.values[5][5] = Border.CLOSED;
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
