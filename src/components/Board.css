@@ -36,8 +36,8 @@
 .border-h.maybe { border-top: 2px dotted gray; }
 .border-h.connected {}
 
-/* Corners where borders meet (can be empty or used for nodes) */
-.corner { background: transparent; }
+/* Corners where borders meet */
+.corner { background: black; }
 
 /* Make borders interactive */
 .border-v:hover, .border-h:hover {
