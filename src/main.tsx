@@ -77,6 +77,7 @@ game.borders.h.values[6][4] = Border.CLOSED;
 game.borders.h.values[5][5] = Border.CLOSED;
 */
 
+/*
 const 上級2 = translate(`
 =TKATT TKTTT= KTTKTT
 TTTK=T TAKATT K=T=TK
@@ -106,6 +107,30 @@ game.borders.h.values[15][9] = Border.CONNECTED;
 game.borders.v.values[13][9] = Border.CLOSED;
 game.borders.v.values[10][9] = Border.CLOSED;
 game.borders.v.values[4][10] = Border.CLOSED;
+*/
+
+const 超上級 = translate(`
+=TTTTK AT=KAT =KTAK= TKTA
+KTKK=K TTKTTT T=TT=T T=TK
+TTTTKT TT=TK= TTTTKK TTT=
+TKT=KT TTTT=T T=KTT= T=TK
+T=TTTT TT=KTT KT=KTT KTT=
+KKT=KT =KTKTK =TTT=T TTTT
+T=TKK= TT=TT= TT=TKT AK=T
+TTTTTK TAT=TT TK=TTA =TKT
+TK=TAT KTTKTK T=TKT= TT=T
+=TTT=T TT=KKA KTT=TT TKTK
+ATTKKT T=ATKK =TTTT= ATT=
+KTT=T= TKTTTT TK=TTT KT=T
+T=ATTK TAKT=T K=TTTT KKTT
+AKTKTT TKTTTT KTTTT= KTTT
+T=TT=T TKTK=T =KTK=K TT=K
+TKTKK= T=TTTK ATTTT= TTKT
+TTTTTK TTT=TT =KT=TT TTKT
+K=KATT =T=KTT T=TT=K TK=T
+`);
+const game = new Game(超上級);
+game.borders.h.values[8][16] = Border.CLOSED;
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
