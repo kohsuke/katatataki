@@ -7,7 +7,7 @@ import Border from "./game/Border.tsx";
 
 function translate(s: string) {
   const mapping = {'T':'た', '=':'＝', 'K':'き', 'A':'か', ' ':'' }
-  s = s.trim();
+  s = s.trim().replaceAll('\n\n', '\n');
   for (const [k,v] of Object.entries(mapping)) {
     s = s.replaceAll(k, v);
   }
@@ -116,9 +116,10 @@ TTTTKT TT=TK= TTTTKK TTT=
 TKT=KT TTTT=T T=KTT= T=TK
 T=TTTT TT=KTT KT=KTT KTT=
 KKT=KT =KTKTK =TTT=T TTTT
-T=TKK= TT=TT= TT=TKT AK=T
+T=TKK= TT=TT= TTKTKT AK=T
 TTTTTK TAT=TT TK=TTA =TKT
 TK=TAT KTTKTK T=TKT= TT=T
+
 =TTT=T TT=KKA KTT=TT TKTK
 ATTKKT T=ATKK =TTTT= ATT=
 KTT=T= TKTTTT TK=TTT KT=T
@@ -131,6 +132,16 @@ K=KATT =T=KTT T=TT=K TK=T
 `);
 const game = new Game(超上級);
 game.borders.h.values[8][16] = Border.CLOSED;
+game.borders.h.values[8][14] = Border.CLOSED;
+game.borders.v.values[16][8] = Border.CLOSED;
+game.borders.v.values[14][9] = Border.CLOSED;
+game.borders.v.values[19][2] = Border.CLOSED;
+game.borders.h.values[12][8] = Border.CLOSED;
+game.borders.v.values[10][3] = Border.CLOSED;
+game.borders.h.values[12][0] = Border.CLOSED;
+game.borders.v.values[9][7] = Border.CLOSED;
+game.borders.h.values[13][1] = Border.CLOSED;
+game.borders.h.values[13][5] = Border.CLOSED;
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
