@@ -25,8 +25,8 @@ const factories = [
       "き＝たかかた",
       "かきたたき＝"
     ]),
-  () =>
-    new Game('中級1', translate(`
+  () => {
+    const game = new Game('中級1', translate(`
 TT=TTT TKTKTT
 =TKKT= TKTA=T
 KATT=T TTT=TA
@@ -39,7 +39,14 @@ TTKTTK =T=TTT
 ATKT=K TTT=K=
 K=TTT= T=TTTT
 TTT=KT TKTK=T
-`)),
+`));
+    game.borders.v.values[0][5] = Border.CLOSED;
+    game.borders.v.values[0][9] = Border.CLOSED;
+    game.borders.h.values[3][9] = Border.CLOSED;
+    game.borders.h.values[9][9] = Border.CLOSED;
+    game.borders.h.values[8][10] = Border.CLOSED;
+    return game;
+  },
   () => {
     const game = new Game('上級1',translate(`
 TTKTK= TT=TTT K=TTK=
