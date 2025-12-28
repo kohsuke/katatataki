@@ -11,11 +11,13 @@ export default class Phrase {
   public readonly name: string;
   public readonly length: number;
   public readonly head: string;
+  public readonly reverseName: string;
 
   private constructor(name: string) {
     this.name = name;
     this.length = name.length;
     this.head = name.charAt(0);
+    this.reverseName = name.split('').reverse().join('');
   }
 
   toString() {

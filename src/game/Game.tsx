@@ -59,52 +59,12 @@ export default class Game {
   solve() {
     this.cells.forEach(r => {
       r.forEach(c => {
-        Direction.ALL.forEach(d => {
-          const n = c.neighbor(d);
-          if (n) {
-            // no phrase includes these sequences
-            if (['きき', 'かか'].includes(c.letter + n.letter)) {
-              c.setBorder(d, Border.CLOSED);
-            }
+        type Route = Cell[];
 
-            if (c.letter == 'か' && c.phrase == Phrase.かたたたき && n.letter == 'き') {
-              c.setBorder(d, Border.CLOSED);
-            }
-
-            // if two cells are connected, they belong to the same phrase
-            if (c.getBorder(d) == Border.CONNECTED) {
-              if (c.phrase != null) n.setPhrase(c.phrase);
-              if (n.phrase != null) c.setPhrase(n.phrase);
-            }
-          }
-        });
-
-        const soleNonClosedDirection = c.soleNonClosedDirection();
-        if (soleNonClosedDirection) {// three borders are closed
-          const n = c.neighbor(soleNonClosedDirection)!;
-          c.setBorder(soleNonClosedDirection, Border.CONNECTED);
-
-          if (c.letter == 'き' && c.phrase == null && n.letter == 'か') {
-            c.setPhrase(Phrase.かき);
-          }
-        }
-
-        const soleConnectedDirection = c.soleConnectedDirection();
-        if (soleConnectedDirection) {
-          // const n = c.neighbor(soleConnectedDirection)!;
-
-          if (c.phrase?.length == 2) {
-            // if we are a part of the length 2 phrase like かき, then we will only have one neighbor
-            Direction.allBut(soleConnectedDirection).map(d => {
-              c.setBorder(d, Border.CLOSED)
-            });
-          }
-        }
-
-        // かたたたき backtrack search
-        function routeSeach(phrase: string) {
-          type Route = Cell[];
-
+        /**
+         * Starting at 'c', find all the possible routes that match the given phrase.
+         */
+        function findRoutes(phrase: string): Route[] {
           const routes: Route[] = [];
 
           /**
@@ -137,8 +97,70 @@ export default class Game {
             })
           }
 
-          // first find all the possible routes
           search([], phrase, c, null);
+
+          return routes;
+        }
+
+        Direction.ALL.forEach(d => {
+          const n = c.neighbor(d);
+          if (n) {
+            // no phrase includes these sequences
+            if (['きき', 'かか'].includes(c.letter + n.letter)) {
+              c.setBorder(d, Border.CLOSED);
+            }
+
+            if (c.letter == 'か' && c.phrase == Phrase.かたたたき && n.letter == 'き') {
+              c.setBorder(d, Border.CLOSED);
+            }
+
+            // if two cells are connected, they belong to the same phrase
+            if (c.getBorder(d) == Border.CONNECTED) {
+              if (c.phrase != null) n.setPhrase(c.phrase);
+              if (n.phrase != null) c.setPhrase(n.phrase);
+            }
+
+            // since きか is not a valid phrase, き cannot be connected to か that cannot be head
+            if (c.letter=='き' && n.letter=='か' && n.head==YesNoMaybe.NO) {
+              c.setBorder(d, Border.CLOSED);
+            }
+          }
+        });
+
+        const soleNonClosedDirection = c.soleNonClosedDirection();
+        if (soleNonClosedDirection) {// three borders are closed
+          const n = c.neighbor(soleNonClosedDirection)!;
+          c.setBorder(soleNonClosedDirection, Border.CONNECTED);
+
+          if (c.letter == 'き' && c.phrase == null) {
+            switch (n.letter) {
+            case 'か':
+              c.setPhrase(Phrase.かき);
+              break;
+            case 'た':
+              // this may be part of かたたたき -- see if that's possible. if not, this must be たき/きた
+              if (findRoutes(Phrase.かたたたき.reverseName).length==0) {
+                Direction.allBut(soleNonClosedDirection.opposite()).forEach(d => n.setBorder(d, Border.CLOSED));
+              }
+            }
+          }
+        }
+
+        const soleConnectedDirection = c.soleConnectedDirection();
+        if (soleConnectedDirection) {
+          // const n = c.neighbor(soleConnectedDirection)!;
+
+          if (c.phrase?.length == 2) {
+            // if we are a part of the length 2 phrase like かき, then we will only have one neighbor
+            Direction.allBut(soleConnectedDirection).map(d => {
+              c.setBorder(d, Border.CLOSED)
+            });
+          }
+        }
+
+        // かたたたき backtrack search
+        function routeSeach(phrase: string) {
+          const routes = findRoutes(phrase);
 
           // find the choking points, where all the routes pass
           const chokingRoute = [];
@@ -187,7 +209,7 @@ export default class Game {
           routeSeach(Phrase.かたたたき.name);
         }
         if (c.phrase==Phrase.かたたたき && c.letter=='き') {
-          routeSeach(Phrase.かたたたき.name.split('').reverse().join(''));
+          routeSeach(Phrase.かたたたき.reverseName);
         }
 
         // if き is connected only to one た, and both of them cannot be head, then this must be a part of かたたたき

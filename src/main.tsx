@@ -39,6 +39,7 @@ K=TTT= T=TTTT
 TTT=KT TKTK=T
 `);
 
+/*
 const 上級1 = translate(`
 TTKTK= TT=TTT K=TTK=
 TTTT=T KTKTTT KTTKTT
@@ -74,6 +75,37 @@ game.borders.v.values[2][8] = Border.CLOSED;
 game.borders.h.values[4][7] = Border.CLOSED;
 game.borders.h.values[6][4] = Border.CLOSED;
 game.borders.h.values[5][5] = Border.CLOSED;
+*/
+
+const 上級2 = translate(`
+=TKATT TKTTT= KTTKTT
+TTTK=T TAKATT K=T=TK
+AKTKTT T=T=TK TTTKT=
+T=T=AT KTTTTK TAT=TT
+TKTKKT ATTTKK =TATAT
+TKTT=T T=A=TT TTTTKK
+T=T=TT KKKKT= KTTKTK
+TTKKTT =TTTTT AA=T=K
+AAKATT TT=K=T K=KTTT
+KTTTK= TKTTTK ATTTKT
+KT=TTT TKTTTK KT=T=T
+=TTKKA TT=K=T TTKATT
+TT=T=T KAKTAA T=KTTK
+TTKKTT =TTTKT TKKAT=
+`);
+const game = new Game(上級2);
+
+game.borders.v.values[0][12] = Border.CLOSED;
+game.borders.v.values[15][1] = Border.CLOSED;
+game.borders.h.values[10][1] = Border.CLOSED;
+game.borders.v.values[3][5] = Border.CLOSED;
+game.borders.h.values[2][4] = Border.CLOSED;
+game.borders.v.values[1][11] = Border.CLOSED;
+game.borders.v.values[15][10] = Border.CLOSED;
+game.borders.h.values[15][9] = Border.CONNECTED;
+game.borders.v.values[13][9] = Border.CLOSED;
+game.borders.v.values[10][9] = Border.CLOSED;
+game.borders.v.values[4][10] = Border.CLOSED;
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
