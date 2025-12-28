@@ -21,58 +21,56 @@ export default function Board({ game }: { game: Game }) {
     '--grid-rows': game.Y - 1,
   } as React.CSSProperties;
 
-  return (
-    <div className="puzzle-layout">
-      <div className="puzzle-board" style={gridStyle}>
-        {(()=> {
-          const elements = [];
+  return <div className="puzzle-layout">
+    <div className="puzzle-board" style={gridStyle}>
+      {(()=> {
+        const elements = [];
 
-          for (let r = 0; r < game.Y*2-1; r++) {
-            for (let c = 0; c < game.X*2-1; c++) {
-              const x = Math.floor(c/2);
-              const y = Math.floor(r/2);
-              const isRowEven = r % 2 === 0;
-              const isColEven = c % 2 === 0;
+        for (let r = 0; r < game.Y*2-1; r++) {
+          for (let c = 0; c < game.X*2-1; c++) {
+            const x = Math.floor(c/2);
+            const y = Math.floor(r/2);
+            const isRowEven = r % 2 === 0;
+            const isColEven = c % 2 === 0;
 
-              function toggleBorder(bg: BorderGrid, x: number, y: number) {
-                const v = bg.get(x,y).next();
-                bg.values[x][y] = v;
-                setPatches([...patches, `game.borders.${bg===game.borders.h?'h':'v'}.values[${x}][${y}] = Border.${v.name.toUpperCase()};`]);
-                forceUpdate();
-              }
+            function toggleBorder(bg: BorderGrid, x: number, y: number) {
+              const v = bg.get(x,y).next();
+              bg.values[x][y] = v;
+              setPatches([...patches, `game.borders.${bg===game.borders.h?'h':'v'}.values[${x}][${y}] = Border.${v.name.toUpperCase()};`]);
+              forceUpdate();
+            }
 
-              if (isRowEven && isColEven) {
-                const cell = game.cells[x][y];
-                // not sure why, but this only works if data-version={tick} is there. that must be somehow
-                // forcing a redraw
-                elements.push(<div key={`${r}-${c}`} data-version={tick} className={`cell color-${cell.phrase?.name}`}>
-                  {cell.render()}
-                </div>);
-              } else if (!isRowEven && !isColEven) {
-                elements.push(<div key={`${r}-${c}`} className="corner"></div>);
-              } else {
-                const bg = isRowEven ? game.borders.v : game.borders.h;
+            if (isRowEven && isColEven) {
+              const cell = game.cells[x][y];
+              // not sure why, but this only works if data-version={tick} is there. that must be somehow
+              // forcing a redraw
+              elements.push(<div key={`${r}-${c}`} data-version={tick} className={`cell color-${cell.phrase?.name}`}>
+                {cell.render()}
+              </div>);
+            } else if (!isRowEven && !isColEven) {
+              elements.push(<div key={`${r}-${c}`} className="corner"></div>);
+            } else {
+              const bg = isRowEven ? game.borders.v : game.borders.h;
 
-                const b = bg.get(x,y);
-                const colorClass = (b==Border.CONNECTED ? `color-${game.cells[x][y].phrase?.name}` : '')
-                elements.push(<div key={`${r}-${c}`}
-                                   data-version={tick}
-                    className={`border-${isRowEven?'v':'h'} ${b.name} ${colorClass}`}
-                    onClick={() => toggleBorder(bg,x,y)}></div>);
-              }
+              const b = bg.get(x,y);
+              const colorClass = b==Border.CONNECTED ? `color-${game.cells[x][y].phrase?.name}` : ''
+              elements.push(<div key={`${r}-${c}`}
+                                 data-version={tick}
+                  className={`border-${isRowEven?'v':'h'} ${b.name} ${colorClass}`}
+                  onClick={() => toggleBorder(bg,x,y)}></div>);
             }
           }
-          return elements;
-          })()}
-      </div>
+        }
+        return elements;
+        })()}
+    </div>
+    <div>
+      <ActionButton label="Solve" onAction={() => game.solve()} />
+      <Legend />
       <div>
-        <ActionButton label="Solve" onAction={() => game.solve()} />
-        <Legend />
-        <div>
-          <h3>Patches</h3>
-          {patches.map((p,i) => <div key={i}>{p}</div>)}
-        </div>
+        <h3>Patches</h3>
+        {patches.map((p,i) => <div key={i}>{p}</div>)}
       </div>
     </div>
-  );
+  </div>;
 };

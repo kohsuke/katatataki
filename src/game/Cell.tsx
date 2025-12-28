@@ -42,7 +42,7 @@ export default class Cell {
   }
 
   connectableNeighbors() {
-    return this.neighbors((d) => this.getBorder(d) != Border.CLOSED);
+    return this.neighbors(d => this.getBorder(d) != Border.CLOSED);
   }
 
   forEachNeighbor(f: (n: Cell) => void) {
@@ -141,7 +141,7 @@ export default class Cell {
   updateHead() {
     if (this.head==YesNoMaybe.MAYBE) {
       if (this.phrase) {
-        this.head = (this.letter==this.phrase.head) ? YesNoMaybe.YES : YesNoMaybe.NO;
+        this.head = this.letter==this.phrase.head ? YesNoMaybe.YES : YesNoMaybe.NO;
       }
       if (this.neighbors().find(n => n.head==YesNoMaybe.YES)) {
         this.head = YesNoMaybe.NO;

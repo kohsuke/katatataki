@@ -10,17 +10,13 @@ export default function Root({games}: {games: Game[]}) {
     setGame(games.find(g => g.name == name)!);
   }
 
-  return (
-    <div className="puzzle-root">
-      <div className="selector">
-        <label htmlFor="game-select">Select a puzzle:</label>
-        <select id="game-select" value={game.name} onChange={ev => selectGame(ev.target.value)}>
-          {games.map(g => (
-            <option key={g.name} value={g.name}>{g.name}</option>
-          ))}
-        </select>
-      </div>
-      <Board game={game} />
+  return <div className="puzzle-root">
+    <div className="selector">
+      <label htmlFor="game-select">Select a puzzle:</label>
+      <select id="game-select" value={game.name} onChange={ev => selectGame(ev.target.value)}>
+        {games.map(g => <option key={g.name} value={g.name}>{g.name}</option>)}
+      </select>
     </div>
-  );
+    <Board game={game} />
+  </div>;
 }
