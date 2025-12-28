@@ -102,10 +102,11 @@ export default class Game {
         }
 
         // かたたたき backtrack search
-        if (c.phrase==Phrase.かたたたき && c.head==YesNoMaybe.YES) {
+        function routeSeach(phrase: string) {
           type Route = Cell[];
 
           const routes: Route[] = [];
+
           /**
            * Unit of backtrack search.
            *
@@ -114,41 +115,37 @@ export default class Game {
            * @param c         cell we are visiting to evaluate the match with `remaining`
            * @param from      the direction (from the `cell` PoV) the search came from
            */
-          function search(head: Route, remaining: string, c: Cell, from: Direction|null) {
-            if (c.letter!=remaining.charAt(0)) {
+          function search(head: Route, remaining: string, c: Cell, from: Direction | null) {
+            if (c.letter != remaining.charAt(0)) {
               // not a match
               return;
             }
-            if (remaining.length==1) {
+            if (remaining.length == 1) {
               // found the whole match
               routes.push([...head, c]);
               return;
             }
 
             Direction.ALL.forEach(d => {
-              if (d==from)    return;   // we came from there
-              if (c.getBorder(d)==Border.CLOSED)  return;  // can't go there
+              if (d == from) return;   // we came from there
+              if (c.getBorder(d) == Border.CLOSED) return;  // can't go there
 
               const n = c.neighbor(d);
               if (n) {
-                search([...head, c],remaining.substring(1), n, d.opposite());
+                search([...head, c], remaining.substring(1), n, d.opposite());
               }
             })
           }
 
           // first find all the possible routes
-          search([], Phrase.かたたたき.name, c, null);
-
-          if (c.x==11 && c.y==9) {
-            console.log(`routes: ${routes.map(r => `[${r}]`).join(', ')}`);
-          }
+          search([], phrase, c, null);
 
           // find the choking points, where all the routes pass
           const chokingRoute = [];
-          for (let pos=0; pos<Phrase.かたたたき.length; pos++) {
+          for (let pos = 0; pos < Phrase.かたたたき.length; pos++) {
             const possibilities = new Set<Cell>();
             routes.map(r => possibilities.add(r[pos]));
-            if (possibilities.size==1) {
+            if (possibilities.size == 1) {
               let choke = [...possibilities][0];
               choke.setPhrase(Phrase.かたたたき);
               chokingRoute.push(choke);
@@ -157,31 +154,50 @@ export default class Game {
             }
           }
 
-          for (let pos=0; pos<Phrase.かたたたき.length; pos++) {
-            const l = chokingRoute[pos-1];
+          for (let pos = 0; pos < Phrase.かたたたき.length; pos++) {
+            const l = chokingRoute[pos - 1];
             const c = chokingRoute[pos];
-            const r = chokingRoute[pos+1];
+            const r = chokingRoute[pos + 1];
 
             // if both sides of the choke is also choked, then we can close off other borders
-            if (l!==null && c!==null && r!==null) {// !== to handle the index out of bounds (undefined) case correctly
+            if (l !== null && c !== null && r !== null) {// !== to handle the index out of bounds (undefined) case correctly
               Direction.ALL.forEach(d => {
                 const n = c.neighbor(d);
                 let b = null;
-                if (n==null)    return;
-                if (n===l || n===r) b = Border.CONNECTED;
-                if (l!==null && r!==null && n!==l && n!==r) b = Border.CLOSED;
+                if (n == null) return;
+                if (n === l || n === r) b = Border.CONNECTED;
+                if (l !== null && r !== null && n !== l && n !== r) b = Border.CLOSED;
                 if (b) c.setBorder(d, b);
               })
             }
 
             // if we are a choking point, we can close off borders that have no possibilities of connection
-            if (c!==null) {
+            if (c !== null) {
               Direction.ALL.forEach(d => {
                 const n = c.neighbor(d);
-                if (!routes.find(r => r[pos-1]==n || r[pos+1]==n)) {
+                if (!routes.find(r => r[pos - 1] == n || r[pos + 1] == n)) {
                   c.setBorder(d, Border.CLOSED);
                 }
               })
+            }
+          }
+        }
+
+        if (c.phrase==Phrase.かたたたき && c.letter=='か') {
+          routeSeach(Phrase.かたたたき.name);
+        }
+        if (c.phrase==Phrase.かたたたき && c.letter=='き') {
+          routeSeach(Phrase.かたたたき.name.split('').reverse().join(''));
+        }
+
+        // if き is connected only to one た, and both of them cannot be head, then this must be a part of かたたたき
+        if (c.letter=='き') {
+          const d = c.soleConnectedDirection();
+          if (d) {
+            const n = c.neighbor(d)!;
+            if (n.letter=='た' && c.cannotBeHead() && n.cannotBeHead()) {
+              c.setPhrase(Phrase.かたたたき);
+              n.setPhrase(Phrase.かたたたき);
             }
           }
         }
@@ -215,6 +231,11 @@ export default class Game {
             if (cn.length==2) {
               // further, if you are only connected to た, then all of them are also a part of かたたたき
               cn.forEach(n => n.setPhrase(Phrase.かたたたき));
+              Direction.ALL.forEach(d => {
+                if (c.getBorder(d) != Border.CLOSED) {
+                  c.setBorder(d, Border.CONNECTED);
+                }
+              });
             }
           }
         }
