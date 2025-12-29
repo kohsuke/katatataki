@@ -1,9 +1,10 @@
 import Phrase from "../game/Phrase.tsx";
 import './Legend.css';
+import {Typography} from "@mui/material";
 
 export default function Legend() {
   return <aside className="game-legend">
-    <h3>Legend</h3>
+    <Typography variant="h5">Legend</Typography>
     <ul>
       {(() => {
         return Phrase.ALL.map(p => {

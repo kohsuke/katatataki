@@ -1,10 +1,11 @@
-import React,{useState,useEffect} from 'react';
+import Button from '@mui/material/Button';
+import React, {useEffect, useState} from 'react';
 import './Board.css';
 import Game from '../game/Game.tsx';
-import ActionButton from './Button.tsx';
 import Legend from "./Legend.tsx";
 import type BorderGrid from "./BorderGrid.tsx";
 import Border from "../game/Border";
+import {Typography} from "@mui/material";
 
 export default function Board({ game }: { game: Game }) {
   // bridge the mutable world of game engine with the React world by using the dummy 'tick' as the sole state
@@ -65,10 +66,10 @@ export default function Board({ game }: { game: Game }) {
         })()}
     </div>
     <div>
-      <ActionButton label="Solve" onAction={() => game.solve()} />
+      <Button variant="contained" onClick={() => game.solve()}>Solve</Button>
       <Legend />
       <div>
-        <h3>Patches</h3>
+        <Typography variant="h5">Patches</Typography>
         {patches.map((p,i) => <div key={i}>{p}</div>)}
       </div>
     </div>

@@ -1,8 +1,12 @@
 .puzzle-root {
   padding: 1rem;
-  font-family: sans-serif;
 }
 
 .puzzle-root .selector {
+  padding-bottom: 1rem;
+}
+
+.puzzle-root h5 {
+  padding-top: 1rem;
   padding-bottom: 1rem;
 }
